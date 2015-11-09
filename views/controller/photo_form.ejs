@@ -1,0 +1,115 @@
+<div class="page-header">
+    <h1><%= title %></h1>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <form method="post" id="photo_form">
+            <div class="form-group">
+                <label for="Title">Title</label>
+                <input type="text" class="form-control" id="Title" name="Title" value="<%= photo.PhotoTitle || '' %>" placeholder="Title">
+            </div>
+            <div class="form-group">
+                <label for="Tag">Tag</label>
+                <input type="text" class="form-control" id="Tag" name="Tag" value="<%= photo.PhotoTag || '' %>" placeholder="Tag">
+            </div>
+            <div class="form-group">
+                <label>PhotoThumb
+                    <input type="file" id="photo_imagethumb" onchange="previewFileThumb('#photo_imagethumb')" name="imageThumb"/>
+                </label>
+                <div class="row">
+                    <div class="col-xs-6 col-md-3">
+                        <a href="#" class="thumbnail" id="photothumb_preview">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Photo
+                    <input type="file" id="photo_image" onchange="previewFile('#photo_image')" name="image"/>
+                </label>
+                <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <a href="#" class="thumbnail" id="photo_preview">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-share-alt"></span> <%= title %></button>
+        </form>
+        <hr/>
+        <% if (photo.PhotoString !== "" && photo.PhotoString !== undefined) { %>
+        <label>Photo Image</label>
+        <div class="row">
+            <div class="col-xs-4 col-md-2">
+                <a href="#" class="thumbnail">
+                    <img src=<%- photo.PhotoString %> alt="prduct image set">
+                </a>
+            </div>
+        </div>
+        <% } %>
+        <% if (photo.PhotoThumbString !== "" && photo.PhotoThumbString !== undefined) { %>
+        <label>photo Photo Thumb</label>
+        <div class="row">
+            <div class="col-xs-4 col-md-2">
+                <a href="#" class="thumbnail">
+                    <img src=<%- photo.PhotoThumbString %> alt="prduct image">
+                </a>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</div>
+<script>
+var _image = {};
+var _imageThumb = {};
+
+$(document).ready(function() {
+    $("#photo_form").submit(function(eventObj) {
+        $('<input />').attr('type', 'hidden')
+            .attr('name', "image")
+            .attr('value', JSON.stringify(_image))
+            .appendTo('#photo_form');
+        $('<input />').attr('type', 'hidden')
+            .attr('name', "imageThumb")
+            .attr('value', JSON.stringify(_imageThumb))
+            .appendTo('#photo_form');
+        return true;
+    });
+});
+
+function previewFile(input_id) {
+    _image = {};
+    var files = document.querySelector(input_id).files;
+
+    for (var i = 0; i < files.length; i++) {
+        (function(file) {
+            var reader = new FileReader();
+            reader.onloadend = function(e) {
+                $('#photo_preview').html('<img src="' + e.target.result + '">');
+                _image = e.target.result;
+            }
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        })(files[i]);
+    };
+}
+
+function previewFileThumb(input_id) {
+    _imageThumb = {};
+    var files = document.querySelector(input_id).files;
+    for (var i = 0; i < files.length; i++) {
+        (function(file) {
+            var reader = new FileReader();
+            reader.onloadend = function(e) {
+                $('#photothumb_preview').html('<img src="' + e.target.result + '">');
+                _imageThumb = e.target.result;
+            }
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        })(files[i]);
+    };
+}
+</script>
